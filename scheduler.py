@@ -229,6 +229,7 @@ def main():
             position_full_usd=int(settings.get('position_full_usd', 100)),
             position_partial_usd=int(settings.get('position_partial_usd', 66)),
             session_thresholds=settings.get('session_thresholds', {}),
+            max_total_open=int(settings.get('max_concurrent_trades', 1)),
             h1_filter_enabled=bool(settings.get('h1_trend_filter_enabled', True)),
             h1_filter_mode=str(settings.get('h1_filter_mode', 'hard')),
         ))

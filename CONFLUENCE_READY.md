@@ -1,7 +1,7 @@
 # Rogue Bot — Technical Documentation
 
-**Version:** 1.0  
-**Release date:** 2026-04-16  
+**Version:** 1.2  
+**Release date:** 2026-04-17  
 **Instrument:** XAU/USD M15  
 **Base:** Rogue v1.0
 
@@ -186,7 +186,7 @@ Telegram: trade closed          Telegram: trade closed
 
 ### Startup
 ```
-Rogue v1.0 started
+Rogue v1.2 started
 Mode: DEMO | Balance: $5,000.00
 Pair: XAU/USD (M15)
 ```
@@ -230,8 +230,8 @@ Cost before fix: T7→T8 sequence on Apr 13 (-$96.25 avoidable loss).
 
 ```json
 {
-  "bot_name": "Rogue v1.0",
-  "version": "1.0",
+  "bot_name": "Rogue v1.2",
+  "version": "1.2",
   "rr_ratio": 1.5,
   "sl_min_usd": 25.0,
   "sl_max_usd": 60.0,
@@ -265,3 +265,5 @@ Cost before fix: T7→T8 sequence on Apr 13 (-$96.25 avoidable loss).
 | Version | Date | Change |
 |---|---|---|
 | 1.0 | 2026-04-16 | Initial Rogue release. 7 fixes applied from prior research: direction cooldown fires on first SL, tightened exhaustion 2.5x→1.5x, hard daily/session loss caps 8→3/4→2, cooldown 60→120min, guard fires on streak=1, Same Setup Guard close-time fix, full rename. |
+| 1.1 | 2026-04-17 | Wired daily Telegram report time to settings (`daily_report_hour_sgt` / new `daily_report_minute_sgt`); was hardcoded 15:30 SGT in v1.0. Fixed stale 09:30 SGT docstrings in `reporting.py`. Default daily report time now 08:00 SGT. |
+| 1.2 | 2026-04-17 | Fixed two display-only bugs in the startup Telegram message: (1) `Global cap` now reads `max_concurrent_trades` from settings (was falling back to default `2` even when setting was `1`); (2) Asian session threshold now reads the `Asian` key in `session_thresholds` (was looking up legacy `Tokyo` key → defaulting to `min_score + 1`). Bot enforcement was always correct; only the startup Telegram display was wrong. |

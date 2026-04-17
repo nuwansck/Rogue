@@ -152,3 +152,4 @@ Pair: XAU/USD (M15)
 |---|---|---|
 | 1.0 | 2026-04-16 | Initial release. CPR breakout + H1 filter + Same Setup Guard (close-time fix) + direction cooldown fires on first SL + tightened exhaustion + hard daily/session loss caps. |
 | 1.1 | 2026-04-17 | Wired daily Telegram report time to settings (`daily_report_hour_sgt` / new `daily_report_minute_sgt`); was hardcoded 15:30 SGT in v1.0. Fixed stale 09:30 SGT docstrings in `reporting.py`. Default daily report time now 08:00 SGT (aligned with trading-day boundary). |
+| 1.2 | 2026-04-17 | Fixed two display bugs in the `msg_startup` Telegram message: (1) `Global cap` now reads `max_concurrent_trades` from settings instead of defaulting to 2; (2) Asian session threshold now reads from the `Asian` key in `session_thresholds` (was looking up legacy `Tokyo` key → falling back to `min_score + 1`). Display-only — bot enforcement was always correct. |

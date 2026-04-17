@@ -1,4 +1,4 @@
-"""Telegram message templates for Rogue v1.1
+"""Telegram message templates for Rogue v1.2
 AtomicFX-style: clean, state-change only, minimal noise.
 """
 from __future__ import annotations
@@ -35,7 +35,7 @@ def _split_banner(banner: str) -> tuple[str, str]:
     """Extract pair from banner.
     Handles both:
       '🇬🇧 LONDON [XAU/USD]'  → ('🇬🇧 LONDON [XAU/USD]', 'XAU/USD')
-      'Rogue v1.1 | XAU/USD' → ('Rogue v1.1', 'XAU/USD')
+      'Rogue v1.2 | XAU/USD' → ('Rogue v1.2', 'XAU/USD')
     """
     if "[" in banner and "]" in banner:
         pair = banner[banner.index("[")+1 : banner.index("]")]
@@ -384,14 +384,16 @@ def msg_startup(
     max_losing_day=8, trading_day_start_hour=8,
     us_early_end=3, dead_zone_start=4, dead_zone_end=7,
     tokyo_start=8, tokyo_end=15, london_start=16, london_end=20,
-    us_start=21, us_end=23, max_total_open=2,
+    us_start=21, us_end=23, max_total_open=1,
     position_full_usd=30, position_partial_usd=20, session_thresholds=None,
     tg_min_score=3, h1_filter_enabled=True, h1_filter_mode="soft",
 ) -> str:
     thr     = session_thresholds or {}
     lon_thr = thr.get("London", min_score)
     us_thr  = thr.get("US",     min_score)
-    tok_thr = thr.get("Tokyo",  min_score + 1)
+    # v1.2: prefer "Asian" key (current convention); fall back to legacy "Tokyo"
+    # key for back-compat, then to min_score (not min_score + 1) as final default.
+    tok_thr = thr.get("Asian", thr.get("Tokyo", min_score))
     h1_line = (f"H1 filter: {'✅' if h1_filter_enabled else '⬜'} "
                f"{h1_filter_mode.upper() if h1_filter_enabled else 'OFF'}\n")
     return (
