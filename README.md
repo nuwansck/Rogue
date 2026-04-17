@@ -151,3 +151,4 @@ Pair: XAU/USD (M15)
 | Version | Date | Change |
 |---|---|---|
 | 1.0 | 2026-04-16 | Initial release. CPR breakout + H1 filter + Same Setup Guard (close-time fix) + direction cooldown fires on first SL + tightened exhaustion + hard daily/session loss caps. |
+| 1.1 | 2026-04-17 | Wired daily Telegram report time to settings (`daily_report_hour_sgt` / new `daily_report_minute_sgt`); was hardcoded 15:30 SGT in v1.0. Fixed stale 09:30 SGT docstrings in `reporting.py`. Default daily report time now 08:00 SGT (aligned with trading-day boundary). |

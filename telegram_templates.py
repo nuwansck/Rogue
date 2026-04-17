@@ -1,4 +1,4 @@
-"""Telegram message templates for Rogue v1.0
+"""Telegram message templates for Rogue v1.1
 AtomicFX-style: clean, state-change only, minimal noise.
 """
 from __future__ import annotations
@@ -35,7 +35,7 @@ def _split_banner(banner: str) -> tuple[str, str]:
     """Extract pair from banner.
     Handles both:
       '🇬🇧 LONDON [XAU/USD]'  → ('🇬🇧 LONDON [XAU/USD]', 'XAU/USD')
-      'Rogue v1.0 | XAU/USD' → ('Rogue v5.0', 'XAU/USD')
+      'Rogue v1.1 | XAU/USD' → ('Rogue v1.1', 'XAU/USD')
     """
     if "[" in banner and "]" in banner:
         pair = banner[banner.index("[")+1 : banner.index("]")]

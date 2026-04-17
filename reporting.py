@@ -7,7 +7,8 @@ window covers all report periods.
 Schedule (Asia/Singapore timezone, managed by scheduler.py):
   Monthly  — First Monday of each month at 08:00 SGT
   Weekly   — Every Monday at 08:15 SGT  (covers Mon–Fri prior week)
-  Daily    — Mon–Fri at 09:30 SGT       (covers prior trading day, 30 min before Asian open)
+  Daily    — Mon–Fri at the time configured by `daily_report_hour_sgt` /
+             `daily_report_minute_sgt` in settings.json (covers prior trading day)
 
 Usage (called by scheduler.py):
     from reporting import send_daily_report, send_weekly_report, send_monthly_report
@@ -329,7 +330,10 @@ def send_us_session_report()     -> None: send_session_report("US")
 
 
 def send_daily_report() -> None:
-    """Send daily performance summary at 09:30 SGT Mon–Fri.
+    """Send daily performance summary Mon–Fri at the time configured in settings.
+
+    Schedule time is controlled by `daily_report_hour_sgt` and
+    `daily_report_minute_sgt` in settings.json (see scheduler.py).
 
     Covers:
       - Prior trading day  (yesterday, or Friday if today is Monday)

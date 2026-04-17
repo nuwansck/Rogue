@@ -1,5 +1,5 @@
 {
-  "bot_name": "Rogue v1.0",
+  "bot_name": "Rogue v1.1",
   "demo_mode": true,
   "trade_gold": true,
   "signal_threshold": 4,
@@ -74,6 +74,11 @@
   "db_cleanup_hour_sgt": 0,
   "db_cleanup_minute_sgt": 15,
   "db_vacuum_weekly": true,
+
+  "_comment_daily_report": "v1.1: wired-up daily Telegram report time (was hardcoded 15:30 in v1.0).",
+  "daily_report_hour_sgt": 8,
+  "daily_report_minute_sgt": 0,
+
   "calendar_fetch_interval_min": 60,
   "calendar_retry_after_min": 15,
   "midnight_guard_min": 0,

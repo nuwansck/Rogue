@@ -138,10 +138,13 @@ def main():
         coalesce=True,
     )
 
-    # Daily: Mon–Fri at 15:30 SGT (30 min before London session open at 16:00)
+    # Daily: Mon–Fri at {daily_report_hour_sgt}:{daily_report_minute_sgt} SGT
+    # (v1.1: now driven by settings, was hardcoded 15:30 SGT in v1.0)
+    _daily_rpt_h = int(settings.get('daily_report_hour_sgt',   8))
+    _daily_rpt_m = int(settings.get('daily_report_minute_sgt', 0))
     scheduler.add_job(
         send_daily_report,
-        CronTrigger(day_of_week='mon-fri', hour=15, minute=30, timezone=SG_TZ),
+        CronTrigger(day_of_week='mon-fri', hour=_daily_rpt_h, minute=_daily_rpt_m, timezone=SG_TZ),
         id='daily_report',
         name='Daily performance report',
         max_instances=1,
@@ -201,7 +204,7 @@ def main():
     logger.info('  DB retention   — rolling %s days', retention_days)
     logger.info('  Monthly report — first Monday of month at 08:00 SGT')
     logger.info('  Weekly report  — every Monday at 08:15 SGT')
-    logger.info('  Daily report   — Mon–Fri at 15:30 SGT (30 min before London open)')
+    logger.info('  Daily report   — Mon–Fri at %02d:%02d SGT', _daily_rpt_h, _daily_rpt_m)
 
     logger.info('Running startup cycle...')
     try:

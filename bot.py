@@ -1,4 +1,4 @@
-"""Rogue — Automated XAU/USD Trading Bot | v1.0
+"""Rogue — Automated XAU/USD Trading Bot | v1.1
 
 Rogue trades gold (XAU/USD) on M15 using CPR breakout signals with a
 full suite of entry guards, risk controls, and session management.
