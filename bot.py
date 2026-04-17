@@ -1,4 +1,4 @@
-"""Rogue — Automated XAU/USD Trading Bot | v1.2
+"""Rogue — Automated XAU/USD Trading Bot | v1.3
 
 Rogue trades gold (XAU/USD) on M15 using CPR breakout signals with a
 full suite of entry guards, risk controls, and session management.
@@ -814,7 +814,26 @@ def check_breakeven(history: list, trader, alert, settings: dict):
                 )
 
         # Stage 1b: move SL to breakeven on remaining position
-        sl_result = trader.modify_sl(str(trade_id), float(entry))
+        # v1.3 — include spread in BE price so the trade is TRULY breakeven after
+        # OANDA's bid-ask cost (not just paper-BE that nets a small loss).
+        # For BUY: BE price = entry + spread (stop-out returns to actual entry)
+        # For SELL: BE price = entry − spread (same logic, inverse direction)
+        # Uses spread_pips captured at trade open (persisted in record).
+        be_price = float(entry)
+        if settings.get("breakeven_spread_adjust", True):
+            try:
+                _spread_pips = float(trade.get("spread_pips") or 0)
+                _pip = 0.01  # XAU_USD pip size
+                _spread_usd = _spread_pips * _pip
+                if _spread_usd > 0:
+                    be_price = (entry + _spread_usd) if direction == "BUY" else (entry - _spread_usd)
+                    log.info(
+                        "BE spread-adjust | trade %s | entry=%.2f → BE=%.2f (spread %.0f pips = $%.2f)",
+                        trade_id, entry, be_price, _spread_pips, _spread_usd,
+                    )
+            except (TypeError, ValueError):
+                pass  # fall back to pure entry if spread_pips is unusable
+        sl_result = trader.modify_sl(str(trade_id), round(be_price, 2))
         if sl_result.get("success"):
             trade["breakeven_moved"] = True
             trade["partial_closed"]  = partial_ok

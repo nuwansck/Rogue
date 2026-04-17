@@ -1,6 +1,6 @@
 # Rogue Bot — Technical Documentation
 
-**Version:** 1.2  
+**Version:** 1.3  
 **Release date:** 2026-04-17  
 **Instrument:** XAU/USD M15  
 **Base:** Rogue v1.0
@@ -186,7 +186,7 @@ Telegram: trade closed          Telegram: trade closed
 
 ### Startup
 ```
-Rogue v1.2 started
+Rogue v1.3 started
 Mode: DEMO | Balance: $5,000.00
 Pair: XAU/USD (M15)
 ```
@@ -230,13 +230,13 @@ Cost before fix: T7→T8 sequence on Apr 13 (-$96.25 avoidable loss).
 
 ```json
 {
-  "bot_name": "Rogue v1.2",
-  "version": "1.2",
+  "bot_name": "Rogue v1.3",
+  "version": "1.3",
   "rr_ratio": 1.5,
   "sl_min_usd": 25.0,
   "sl_max_usd": 60.0,
   "sl_mode": "atr_based",
-  "signal_threshold": 4,
+  "signal_threshold": 5,
   "position_full_usd": 100,
   "position_partial_usd": 66,
   "h1_trend_filter_enabled": true,
@@ -267,3 +267,4 @@ Cost before fix: T7→T8 sequence on Apr 13 (-$96.25 avoidable loss).
 | 1.0 | 2026-04-16 | Initial Rogue release. 7 fixes applied from prior research: direction cooldown fires on first SL, tightened exhaustion 2.5x→1.5x, hard daily/session loss caps 8→3/4→2, cooldown 60→120min, guard fires on streak=1, Same Setup Guard close-time fix, full rename. |
 | 1.1 | 2026-04-17 | Wired daily Telegram report time to settings (`daily_report_hour_sgt` / new `daily_report_minute_sgt`); was hardcoded 15:30 SGT in v1.0. Fixed stale 09:30 SGT docstrings in `reporting.py`. Default daily report time now 08:00 SGT. |
 | 1.2 | 2026-04-17 | Fixed two display-only bugs in the startup Telegram message: (1) `Global cap` now reads `max_concurrent_trades` from settings (was falling back to default `2` even when setting was `1`); (2) Asian session threshold now reads the `Asian` key in `session_thresholds` (was looking up legacy `Tokyo` key → defaulting to `min_score + 1`). Bot enforcement was always correct; only the startup Telegram display was wrong. |
+| 1.3 | 2026-04-17 | "Safe and workable" release aligning closer to base CPR spec. Four changes: (1) `signal_threshold` raised 4→5 — cuts weakest setups; (2) wide CPR (>1.0% of pivot) now HARD-blocked via new `cpr_width_block_pct` setting (was merely 0-scored in v1.2); (3) breakeven re-enabled (`breakeven_enabled: true`) — at 1× SL profit, partial-close 50% + move SL to entry; (4) breakeven SL now offset by entry spread (new `breakeven_spread_adjust: true`) so BE stop-outs net truly zero PnL instead of small spread-cost loss. Expected effect: ~30–40% fewer trades with higher average quality; roughly half of winning trades become risk-free runners post-BE. |

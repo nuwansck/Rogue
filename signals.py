@@ -121,6 +121,28 @@ class SignalEngine:
         pdl         = prev_low
         cpr_width_pct = abs(tc - bc) / pivot * 100
 
+        # v1.3 — HARD BLOCK for very wide CPR (>1.0% default). Base spec excludes
+        # wide-CPR days entirely — they're typically news-driven / post-trend
+        # exhaustion days with high false-breakout rates. Prior v1.2 behaviour
+        # merely gave 0 points for wide CPR, letting other components carry the
+        # score. Now we refuse the trade outright. Configurable via
+        # cpr_width_block_pct (set to 0 to disable).
+        _cpr_block_pct = float((settings or {}).get("cpr_width_block_pct", 1.0))
+        if _cpr_block_pct > 0 and cpr_width_pct > _cpr_block_pct:
+            _blocked_levels = {
+                "pivot":         round(pivot, 2),
+                "tc":            round(tc, 2),
+                "bc":            round(bc, 2),
+                "cpr_width_pct": round(cpr_width_pct, 3),
+            }
+            log.info(
+                "CPR width HARD BLOCK | width=%.3f%% > %.2f%% threshold — no trade",
+                cpr_width_pct, _cpr_block_pct,
+            )
+            return 0, "NONE", (
+                f"CPR too wide ({cpr_width_pct:.2f}% > {_cpr_block_pct:.1f}% threshold) — blocked"
+            ), _blocked_levels, 0
+
         levels = {
             "pivot":         round(pivot, 2),
             "tc":            round(tc, 2),
@@ -297,6 +319,8 @@ class SignalEngine:
                 )
 
         # ── 3. CPR width ───────────────────────────────────────────────────
+        # v1.3: Very wide CPR (>1.0%) is hard-blocked above, before scoring.
+        # This block only sees widths up to cpr_width_block_pct.
         if cpr_width_pct < 0.5:
             score += 2
             reasons.append(f"✅ Narrow CPR ({cpr_width_pct:.2f}% < 0.5%) (+2)")
@@ -304,6 +328,7 @@ class SignalEngine:
             score += 1
             reasons.append(f"⚠️ Moderate CPR ({cpr_width_pct:.2f}% in 0.5–1.0%) (+1)")
         else:
+            # v1.3: only reachable if cpr_width_block_pct is set higher than 1.0
             reasons.append(f"❌ Wide CPR ({cpr_width_pct:.2f}% > 1.0%) (+0)")
 
         # ── 4. Trend exhaustion check ──────────────────────────────────────
