@@ -1,6 +1,6 @@
 # Rogue Bot — Technical Documentation
 
-**Version:** 1.3  
+**Version:** 1.4  
 **Release date:** 2026-04-17  
 **Instrument:** XAU/USD M15  
 **Base:** Rogue v1.0
@@ -186,7 +186,7 @@ Telegram: trade closed          Telegram: trade closed
 
 ### Startup
 ```
-Rogue v1.3 started
+Rogue v1.4 started
 Mode: DEMO | Balance: $5,000.00
 Pair: XAU/USD (M15)
 ```
@@ -230,8 +230,8 @@ Cost before fix: T7→T8 sequence on Apr 13 (-$96.25 avoidable loss).
 
 ```json
 {
-  "bot_name": "Rogue v1.3",
-  "version": "1.3",
+  "bot_name": "Rogue v1.4",
+  "version": "1.4",
   "rr_ratio": 1.5,
   "sl_min_usd": 25.0,
   "sl_max_usd": 60.0,
@@ -268,3 +268,4 @@ Cost before fix: T7→T8 sequence on Apr 13 (-$96.25 avoidable loss).
 | 1.1 | 2026-04-17 | Wired daily Telegram report time to settings (`daily_report_hour_sgt` / new `daily_report_minute_sgt`); was hardcoded 15:30 SGT in v1.0. Fixed stale 09:30 SGT docstrings in `reporting.py`. Default daily report time now 08:00 SGT. |
 | 1.2 | 2026-04-17 | Fixed two display-only bugs in the startup Telegram message: (1) `Global cap` now reads `max_concurrent_trades` from settings (was falling back to default `2` even when setting was `1`); (2) Asian session threshold now reads the `Asian` key in `session_thresholds` (was looking up legacy `Tokyo` key → defaulting to `min_score + 1`). Bot enforcement was always correct; only the startup Telegram display was wrong. |
 | 1.3 | 2026-04-17 | "Safe and workable" release aligning closer to base CPR spec. Four changes: (1) `signal_threshold` raised 4→5 — cuts weakest setups; (2) wide CPR (>1.0% of pivot) now HARD-blocked via new `cpr_width_block_pct` setting (was merely 0-scored in v1.2); (3) breakeven re-enabled (`breakeven_enabled: true`) — at 1× SL profit, partial-close 50% + move SL to entry; (4) breakeven SL now offset by entry spread (new `breakeven_spread_adjust: true`) so BE stop-outs net truly zero PnL instead of small spread-cost loss. Expected effect: ~30–40% fewer trades with higher average quality; roughly half of winning trades become risk-free runners post-BE. |
+| 1.4 | 2026-04-28 | Hotfix — daily Telegram report crash. The daily report had been throwing `TypeError: msg_daily_report() got an unexpected keyword argument 'session_start_sgt'` every night since Apr 22, leaving you blind to the daily wrap-up Telegram for 6 days. Root cause: the `send_daily_report` function in `reporting.py` was passing a `session_start_sgt` keyword arg that the corresponding template doesn't accept. Fix removed the unused arg from the call site (line 371) plus the dead `_rep_settings` and `_sess_hour` helper lines that produced it. Pure cleanup, ~3 lines deleted. Trading was unaffected — only the daily wrap-up Telegram message was failing. The first daily report after deploying v1.4 will arrive at 08:00 SGT covering the prior trading day. |
